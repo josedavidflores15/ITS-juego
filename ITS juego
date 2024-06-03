@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Misión Salud: Combatiendo las ITS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        #game {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .question {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .answer {
+            margin: 5px 0;
+        }
+        .result {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div id="game">
+    <h1>Misión Salud: Combatiendo las ITS</h1>
+    <div id="question-container">
+        <div id="question" class="question"></div>
+        <button id="answer1" class="answer" onclick="selectAnswer(0)"></button>
+        <button id="answer2" class="answer" onclick="selectAnswer(1)"></button>
+        <button id="answer3" class="answer" onclick="selectAnswer(2)"></button>
+    </div>
+    <div id="result" class="result hidden"></div>
+    <button id="next-btn" class="hidden" onclick="nextQuestion()">Siguiente</button>
+</div>
+
+<script>
+    const questions = [
+        {
+            question: "¿Cuál de las siguientes es una medida eficaz para prevenir las ITS?",
+            answers: [
+                { text: "Usar preservativos", correct: true },
+                { text: "No compartir alimentos", correct: false },
+                { text: "Tomar vitaminas", correct: false }
+            ]
+        },
+        {
+            question: "¿Qué significa ITS?",
+            answers: [
+                { text: "Infección de Transmisión Sexual", correct: true },
+                { text: "Infección Transmitida por Sangre", correct: false },
+                { text: "Infección Tuberculosa Sintomática", correct: false }
+            ]
+        },
+        {
+            question: "¿Es posible tener una ITS y no mostrar síntomas?",
+            answers: [
+                { text: "Sí", correct: true },
+                { text: "No", correct: false },
+                { text: "Solo en mujeres", correct: false }
+            ]
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const questionElement = document.getElementById('question');
+    const answerButtons = document.querySelectorAll('.answer');
+    const resultElement = document.getElementById('result');
+    const nextButton = document.getElementById('next-btn');
+
+    function startGame() {
+        currentQuestionIndex = 0;
+        score = 0;
+        nextButton.classList.add('hidden');
+        showQuestion();
+    }
+
+    function showQuestion() {
+        resetState();
+        const question = questions[currentQuestionIndex];
+        questionElement.textContent = question.question;
+        question.answers.forEach((answer, index) => {
+            const button = answerButtons[index];
+            button.textContent = answer.text;
+            button.dataset.correct = answer.correct;
+            button.classList.remove('hidden');
+        });
+    }
+
+    function resetState() {
+        resultElement.classList.add('hidden');
+        answerButtons.forEach(button => {
+            button.classList.remove('correct', 'incorrect');
+        });
+    }
+
+    function selectAnswer(index) {
+        const correct = questions[currentQuestionIndex].answers[index].correct;
+        if (correct) {
+            score++;
+        }
+        answerButtons.forEach((button, idx) => {
+            if (questions[currentQuestionIndex].answers[idx].correct) {
+                button.classList.add('correct');
+            } else {
+                button.classList.add('incorrect');
+            }
+            button.disabled = true;
+        });
+        resultElement.textContent = correct ? "¡Correcto!" : "Incorrecto.";
+        resultElement.classList.remove('hidden');
+        nextButton.classList.remove('hidden');
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        resetState();
+        questionElement.textContent = Juego terminado. Tu puntaje es ${score} de ${questions.length}.;
+        nextButton.textContent = "Reiniciar";
+        nextButton.onclick = startGame;
+        nextButton.classList.remove('hidden');
+    }
+
+    startGame();
+</script>
+
+</body>
+</html>
